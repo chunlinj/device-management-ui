@@ -1,0 +1,16 @@
+.login-form {
+  max-width: 300px;
+}
+
+.login-form-forgot {
+  float: right;
+}
+
+.login-form-button {
+  width: 100%;
+}
+.wapper-form{
+  height: 100%;
+  background-image: url(../../assets/loginBackground.jpg);
+  background-size:cover;
+}

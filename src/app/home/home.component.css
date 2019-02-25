@@ -1,0 +1,20 @@
+
+
+:host ::ng-deep .trigger:hover {
+  color: #1890ff;
+}
+
+:host ::ng-deep .logo {
+  height: 64px;
+  background: rgba(255, 255, 255);
+  background-image: url(../../assets/siemens.png);
+  background-size: cover;
+}
+
+.wapper-layout {
+  height: 100%;
+}
+
+.wapper-forout{
+ width: 100%;
+}

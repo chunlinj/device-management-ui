@@ -1,0 +1,81 @@
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm($event)">
+  <!-- 姓名 -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>姓名</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <input nz-input formControlName="name" placeholder="请输入姓名">
+      <nz-form-explain *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors">
+        <ng-container *ngIf="validateForm.get('name').hasError('required')">
+          姓名为必填项
+        </ng-container>
+        <ng-container *ngIf="validateForm.get('name').hasError('minlength')">
+          姓名长度最少为2位
+        </ng-container>
+      </nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- 性别 -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>性别</nz-form-label>
+    <nz-form-control [nzSpan]="12">
+      <nz-radio-group formControlName="gender">
+        <label nz-radio nzValue="0">女</label>
+        <label nz-radio nzValue="1">男</label>
+      </nz-radio-group>
+      <nz-form-explain *ngIf="validateForm.get('gender').dirty&&validateForm.get('gender').errors">
+        <ng-container *ngIf="validateForm.get('gender').hasError('required')">
+          性别为必选项
+        </ng-container>
+      </nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- 邮箱 -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>邮箱</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <input nz-input formControlName="email" placeholder="请输入邮箱" type="email">
+      <nz-form-explain *ngIf="validateForm.get('email').dirty&&validateForm.get('email').errors">
+        <ng-container *ngIf="validateForm.get('email').hasError('email')">
+          请输入正确的邮箱格式
+        </ng-container>
+        <ng-container *ngIf="validateForm.get('email').hasError('required')">
+          邮箱为必填项
+        </ng-container>
+      </nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- 手机号码 -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">手机号码</nz-form-label>
+    <div>
+      <nz-form-control [nzSpan]="12" nzHasFeedback>
+        <input nz-input formControlName="phoneNumber" placeholder="请收入手机号码">
+        <nz-form-explain *ngIf="validateForm.get('phoneNumber').dirty&&validateForm.get('phoneNumber').hasError('pattern')">手机号码格式不正确</nz-form-explain>
+      </nz-form-control>
+    </div>
+  </nz-form-item>
+
+  <!-- 入职日期 -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">入职日期</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <nz-date-picker nzFormat="yyyy-MM-dd" formControlName="joinDate"></nz-date-picker>
+      <nz-form-explain *ngIf="validateForm.get('joinDate').dirty&&validateForm.get('joinDate').errors">
+        <ng-container *ngIf="validateForm.get('joinDate').hasError('date')">
+          入职时间不能早于今天
+        </ng-container>
+      </nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- 添加按钮 -->
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="12">
+      <button nz-button nzType="primary" [disabled]="!validateForm.valid">添加</button>
+      <button nz-button (click)="resetForm($event)">重置</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

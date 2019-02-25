@@ -1,0 +1,148 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="panel">
+  <!--固定头-->
+  <div class="head">
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <span class="adjustPos">
+          <img class="icon"  src="../../assets/siemens.png"/>
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="titleStyle">Configuration Tool</span>
+        <div *ngFor="let step of steps">
+          &nbsp;<i class="angle right icon"></i>
+          <span class="navStyle">{{step}}</span>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </div>
+
+
+  <!--主面板-->
+  <div class="mainPanel" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start stretch" fxLayoutGap="0px" fxLayoutGap.xs="0">
+    <div style="margin-top:5px;margin-left:10px;width: 100%;">
+      <nz-table
+        #borderedTable
+        nzBordered
+        [nzData]="dataSet">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Serial Number</th>
+          <th>Timestamp</th>
+          <th>Status</th>
+          <th>Current CFG version</th>
+          <th>Target binary version</th>
+          <th>Current binary version</th>
+          <th>Update</th>
+          <th>Reset</th>
+          <th>Log</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of borderedTable.data">
+          <td>{{data.deviceName}}</td>
+          <td>{{data.deviceId}}</td>
+          <td>{{data.lastActiveTime}}</td>
+          <td>{{data.online}}</td>
+          <td>{{data.cfgVersion}}</td>
+
+          <td><button nz-button [nzType]="'second'" (click)="showModalVersion(data.deviceId)"><span>{{data.targetNewVersion}}</span></button></td>
+          <td>{{data.swVersion}}</td>
+          <td>
+            <div *ngIf="data.disabledUpdate === true; else elseBlock">
+              <a nz-popconfirm nzTitle="Are you sure to update this SIMAS box binary to {{targetNewVersion}} ?" (nzOnConfirm)="confirmUpdating(data.deviceId)"  nzPlacement="bottom" [ngClass]="{true:'hactive',false:'disable'}[data.disabledUpdate]">{{data.updateStatus}}</a>
+            </div>
+            <ng-template #elseBlock>
+              <a nz-popconfirm nzTitle="Are you sure to update this SIMAS box binary to {{targetNewVersion}} ?"   nzPlacement="bottom" disabled [ngClass]="{true:'hactive',false:'disable'}[data.disabledUpdate]">{{data.updateStatus}}</a>
+            </ng-template>
+          </td>
+          <td><a nz-popconfirm nzTitle="Are you sure to reset this SIMAS box"   nzPlacement="bottom" (nzOnConfirm)="resetConfirm(data.deviceId)">reset</a></td>
+          <td><a nz-button [nzType]="'primary'" (click)="showModal()">log</a></td>
+        </tr>
+        </tbody>
+      </nz-table>
+
+
+      <!-- Target binary version modal -->
+      <nz-modal [(nzVisible)]="isVisibleTargetVerionModelLog" nzTitle="Vsersion selection" (nzOnCancel)="handleOkModalTargetVersion()" (nzOnOk)="handleOkModalTargetVersin()">
+        <nz-table
+          #borderedTable
+          nzBordered
+          [nzData]="dataSet">
+          <thead>
+          <tr>
+            <th>Binary version number</th>
+            <th>download time</th>
+            <th [nzFilterMultiple]="false"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of dataSetVersion">
+            <td>{{data.name}}</td>
+            <td>{{data.age}}</td>
+            <td nzShowCheckbox *ngIf="checkbox" [(nzChecked)]="data.checked" (nzCheckedChange)="refreshStatus(data.key)"></td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-modal>
+
+
+      <!-- log modal -->
+      <nz-modal [(nzVisible)]="isVisibleModelLog" nzTitle="Log Monitoring" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" nzWidth="80%">
+        <form nz-form [formGroup]="validateLogForm">
+          <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="8" >
+              <nz-form-item nzFlex>
+                <nz-form-label >Start date</nz-form-label>
+                <nz-form-control>
+                  <nz-date-picker nzFormat="yyyy-MM-dd" formControlName="joinDateStart"></nz-date-picker>
+                  <nz-form-explain *ngIf="validateLogForm.get('joinDateStart').dirty&&validateLogForm.get('joinDateStart').errors">
+                    <ng-container *ngIf="validateLogForm.get('joinDateStart').hasError('date')">
+                      时间不能早于今天
+                    </ng-container>
+                  </nz-form-explain>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8" >
+              <nz-form-item nzFlex>
+                <nz-form-label >End date</nz-form-label>
+                <nz-form-control>
+                  <nz-date-picker nzFormat="yyyy-MM-dd" formControlName="joinDateEnd"></nz-date-picker>
+                  <nz-form-explain *ngIf="validateLogForm.get('joinDateEnd').dirty&&validateLogForm.get('joinDateEnd').errors">
+                    <ng-container *ngIf="validateLogForm.get('joinDateEnd').hasError('date')">
+                      时间不能早于今天
+                    </ng-container>
+                  </nz-form-explain>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8" >
+              <nz-form-item nzFlex>
+                <nz-form-label >Start date</nz-form-label>
+                <nz-form-control>
+                  <input nz-input placeholder="placeholder"  >
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div nz-row>
+            <div nz-col [nzSpan]="24" style="text-align: right;">
+              <button nz-button [nzType]="'primary'">Search</button>
+              <button nz-button (click)="resetForm()">Clear</button>
+              <a style="margin-left:8px;font-size:12px;" (click)="toggleCollapse()">
+                Collapse
+                <i nz-icon [type]="isCollapse?'down':'up'"></i>
+              </a>
+            </div>
+          </div>
+        </form>
+        <div class="search-result-list">
+          Search Result List
+        </div>
+
+      </nz-modal>
+    </div>
+  </div>
+</div>

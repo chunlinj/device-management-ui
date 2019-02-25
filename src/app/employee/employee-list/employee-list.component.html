@@ -1,0 +1,36 @@
+<nz-table #basicTable [nzData]="dataSet" [nzFrontPagination]="false" [nzTotal]="total" [(nzPageIndex)]="currtPage"
+          [nzPageSize]="size" (nzPageIndexChange)="fatchEmployeeList()" [nzLoading]="isLoading">
+  <thead>
+  <tr>
+    <th>#</th>
+    <th>姓名</th>
+    <th>性别</th>
+    <th>邮箱</th>
+    <th>电话</th>
+    <th>生日</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of basicTable.data ; let i = index;  trackBy: trackByEmpId">
+    <td>{{i}}</td>
+    <td>{{data.name}}</td>
+    <td>{{data.gender === '1' ? '男' : '女'}}</td>
+    <td>{{data.email}}</td>
+    <td>{{data.phoneNumber}}</td>
+    <td>{{data.joinDate | date: 'yyyy-MM-dd'}}</td>
+    <td>
+      <a nz-button [nzType]="'primary'" (click)="showModal()">编辑</a>
+      <nz-divider nzType="vertical"></nz-divider>
+      <a nz-popconfirm nzTitle="确定要删除此员工吗?" (nzOnConfirm)="confirmDel(data.id)" (nzOnCancel)="cancelDel()" nzPlacement="bottom">删除</a>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <p>Content one</p>
+  <p>Content two</p>
+  <p>Content three</p>
+</nz-modal>
